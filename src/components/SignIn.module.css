@@ -1,0 +1,26 @@
+.signin {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	gap: 3rem;
+}
+.signin-btn {
+	display: inline-block;
+	margin: auto;
+	padding: 2rem 4rem;
+	font-size: 1.8rem;
+
+	cursor: pointer;
+}
+.signin-guidelines {
+	font-size: 1.6rem;
+	text-align: center;
+	line-height: 1.6;
+}

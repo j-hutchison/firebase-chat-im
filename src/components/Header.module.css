@@ -1,0 +1,25 @@
+.chat-header {
+	padding: 2rem 2rem 2rem 1rem;
+	background-color: #000;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.chat-logo {
+	font-size: 3.6rem;
+}
+.chat-signout {
+	border: none;
+	border-radius: 1px;
+	padding: 2rem 4rem;
+	background-color: rgba(43, 44, 48, 0.6);
+	color: #fff;
+	font-size: 1.6rem;
+	cursor: pointer;
+}
+
+.chat-signout:hover,
+.chat-signout:active {
+	background-color: rgba(43, 44, 48, 0.9);
+}
