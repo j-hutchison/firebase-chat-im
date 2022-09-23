@@ -7,10 +7,10 @@
 	max-width: 55%;
 }
 .message-recipient {
-	margin-right: auto;
+	margin-left: auto;
 }
 .message-sender {
-	margin-left: auto;
+	margin-right: auto;
 }
 .message-recipient .message-text {
 	background-color: #4cdf65;
