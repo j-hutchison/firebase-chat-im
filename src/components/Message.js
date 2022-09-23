@@ -1,7 +1,11 @@
 import React from "react";
 import styles from "./Message.module.css";
 
+import { useRef } from "react";
+
 const Message = (props) => {
+	const thisMessage = useRef("");
+
 	return (
 		<div
 			className={
@@ -9,6 +13,7 @@ const Message = (props) => {
 					? `${styles["message"]} ${styles["message-recipient"]}`
 					: `${styles["message"]} ${styles["message-sender"]}`
 			}
+			ref={thisMessage}
 		>
 			<span className={styles["message-text"]}>{props.text}</span>
 			<img

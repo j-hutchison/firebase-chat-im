@@ -1,13 +1,15 @@
 .footer {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 
 	display: flex;
 	width: 100%;
+
+	z-index: 9999;
 }
 .footer-input {
 	flex-grow: 1;
-	background-color: rgba(43, 44, 48, 0.6);
+	background-color: rgb(44, 45, 46);
 	color: #fff;
 	border: none;
 	font-size: 1.8rem;
