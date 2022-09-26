@@ -2,9 +2,24 @@ export class User {
 	#initials;
 	#avatar;
 
-	constructor(initials, avatar) {
-		this.#initials = initials;
+	constructor(name, avatar) {
+		this.#initials = this.#generateInitials(name);
 		this.#avatar = avatar;
+		console.log(avatar);
+	}
+
+	#generateInitials(displayName) {
+		console.log(displayName);
+		const names = displayName.split(" ");
+		let initials = "";
+
+		for (let i = 0; i < names.length; i++) {
+			console.log(names.at(i));
+			initials += names[i].at(0);
+		}
+
+		console.log(initials);
+		return initials;
 	}
 
 	getInitials() {

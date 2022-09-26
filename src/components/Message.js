@@ -20,6 +20,7 @@ const Message = (props) => {
 				className={styles["message-avatar"]}
 				src={props.avatar}
 				alt={props.initials}
+				referrerpolicy="no-referrer"
 			/>
 		</div>
 	);
