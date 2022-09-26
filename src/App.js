@@ -9,18 +9,13 @@ import { User } from "./models/User";
 import { Message } from "./models/Message";
 
 import { initializeApp } from "firebase/app";
+import { ref, set, getDatabase } from "firebase/database";
+import { useList } from "react-firebase-hooks/database";
+
 import { getAuth } from "firebase/auth";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 
 function App() {
-	const text1 = "Hello! Anyone there?";
-	const avatar1 = "https://randomuser.me/api/portraits/thumb/men/75.jpg";
-	const initials1 = "JH";
-
-	const text2 = "Yes! I'm here! What's up?";
-	const avatar2 = "https://randomuser.me/api/portraits/thumb/men/72.jpg";
-	const initials2 = "YC";
-
 	const firebaseConfig = {
 		apiKey: process.env.REACT_APP_API_KEY,
 		authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -34,35 +29,65 @@ function App() {
 	const firebaseApp = initializeApp(firebaseConfig);
 
 	const auth = getAuth(firebaseApp);
-	const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+	const [signInWithGoogle, user, loadingGoogleAuth] = useSignInWithGoogle(auth);
 	const [currentUser, setCurrentUser] = useState({});
 
+	// const [chatLogs, setChatLogs] = useState([]);
+	const database = getDatabase(firebaseApp);
+
+	// GET MESSAGES FROM DB
+	const [messages, loadingMessages, errorMessages] = useList(
+		ref(database, "messages")
+	);
+	// GET USERS FROM DB
+	const [users, loadingUsers, errorUsers] = useList(ref(database, "users"));
+
+	function writeUserData(currentUser) {
+		set(ref(database, "users/" + currentUser.getUserId()), {
+			initials: currentUser.getInitials(),
+			email: currentUser.getEmail(),
+			avatar: currentUser.getAvatar(),
+		});
+	}
+
+	function writeMessageData(messageText) {
+		set(ref(database, "messages/" + new Date().getTime()), {
+			text: messageText,
+			user: currentUser.getUserId(),
+		});
+	}
+
 	useEffect(() => {
-		// initial get users and messages
+		// if user is updated and returns a user object
 		if (user?.user) {
 			console.log(user);
-			setCurrentUser(() => parseUser(user));
+			const existingUser = isExistingUser(user.user.email);
+			const { avatar, initials } = existingUser.val();
+			const userId = existingUser.key;
+
+			if (initials) {
+				setCurrentUser(() => new User(null, avatar, null, userId, initials));
+			} else {
+				setCurrentUser(() => parseUser(user));
+			}
 			setIsAuthenticated(() => true);
 		}
 	}, [user]);
 
-	useEffect(() => {
-		// get messages on re-render
-	});
-
-	// const user1 = new User(initials1, avatar1);
-	// const user2 = new User(initials2, avatar2);
-
-	// const message1 = new Message(currentUser, user1, text1);
-	// const message2 = new Message(currentUser, user2, text2);
-
-	const [chatLogs, setChatLogs] = useState([]);
+	const isExistingUser = (email) => {
+		return users.filter((user) => user.val().email === email)[0];
+	};
 
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	const parseUser = (user) => {
-		const current = new User(user.user.displayName, user.user.photoURL);
-		return current;
+		const curr_user = new User(
+			user.user.displayName,
+			user.user.photoURL,
+			user.user.email
+		);
+		writeUserData(curr_user);
+		return curr_user;
 	};
 
 	const handleSignoutClick = () => {
@@ -73,7 +98,7 @@ function App() {
 
 	const submitMessage = (message) => {
 		const newMessage = new Message(currentUser, currentUser, message);
-		setChatLogs(() => [...chatLogs, newMessage]);
+		writeMessageData(message);
 	};
 
 	return (
@@ -87,12 +112,16 @@ function App() {
 					<SignIn
 						signInWithGoogle={signInWithGoogle}
 						user={currentUser}
-						loading={loading}
+						loading={loadingGoogleAuth}
 					/>
 				)}
 				{isAuthenticated && (
 					<>
-						<Conversation chatLogs={chatLogs} />
+						<Conversation
+							chatLogs={messages}
+							users={users}
+							currentUser={currentUser}
+						/>
 						<MessageInputBar submitMessage={submitMessage} />
 					</>
 				)}

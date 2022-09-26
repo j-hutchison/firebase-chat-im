@@ -6,7 +6,7 @@ export class Message {
 	constructor(currentUser, user, text) {
 		this.#user = user;
 		this.#text = text;
-		this.#isCurrentUser = this.#user.isCurrentUser(currentUser.getInitials());
+		this.#isCurrentUser = this.#user.isCurrentUser(currentUser.getUserId());
 	}
 
 	getMessage() {

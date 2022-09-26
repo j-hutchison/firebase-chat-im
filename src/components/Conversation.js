@@ -13,17 +13,27 @@ const Conversation = (props) => {
 
 	return (
 		<div className={styles["conversation"]} ref={thisConversation}>
-			{props.chatLogs.map((message) => {
-				const messageUser = message.getUser();
+			{props.chatLogs.map((message, index) => {
+				const messageUserId = message.val().user;
 
-				return (
-					<Message
-						isRecipient={message.getIsCurrentUser()}
-						text={message.getMessageText()}
-						avatar={messageUser.getAvatar()}
-						initials={messageUser.getInitials()}
-					></Message>
-				);
+				const messageUserInfo = props.users.filter(
+					(user) => user.key === messageUserId
+				)[0];
+
+				if (messageUserInfo) {
+					const isCurrentUser = messageUserId === props.currentUser.getUserId();
+					const { avatar, initials } = messageUserInfo.val();
+
+					return (
+						<Message
+							key={index}
+							isRecipient={isCurrentUser}
+							text={message.val().text}
+							avatar={avatar}
+							initials={initials}
+						></Message>
+					);
+				}
 			})}
 		</div>
 	);
