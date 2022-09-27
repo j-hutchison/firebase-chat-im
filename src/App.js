@@ -35,11 +35,14 @@ function App() {
 		if (user?.user) {
 			console.log(user);
 			const existingUser = isExistingUser(user.user.email);
-			const { avatar, initials } = existingUser.val();
-			const userId = existingUser.key;
 
-			if (initials) {
-				setCurrentUser(() => new User(null, avatar, null, userId, initials));
+			if (existingUser) {
+				const { avatar, initials } = existingUser.val();
+				const userId = existingUser.key;
+
+				if (initials) {
+					setCurrentUser(() => new User(null, avatar, null, userId, initials));
+				}
 			} else {
 				setCurrentUser(() => parseUser(user));
 			}
@@ -69,7 +72,7 @@ function App() {
 
 	const submitMessage = (message) => {
 		const newMessage = new Message(currentUser, currentUser, message);
-		writeMessageData(message);
+		writeMessageData(message, currentUser);
 	};
 
 	return (
