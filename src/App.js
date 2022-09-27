@@ -22,6 +22,7 @@ import {
 function App() {
 	const [currentUser, setCurrentUser] = useState({});
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [isAuthenticated2, setIsAuthenticated2] = useState(false);
 
 	const [signInWithGoogle, user, loadingGoogleAuth] = useSignInWithGoogle(auth);
 	// GET MESSAGES FROM DB
